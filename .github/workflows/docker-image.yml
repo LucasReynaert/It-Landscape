@@ -17,13 +17,9 @@ jobs:
       - uses: actions/setup-node@v4
         with: node-version:'20'
 
-      #Installeer frontend dependencies
-      - working-directory: client
+      - name: Installeer frontend dependencies
+        working-directory: client
         run: npm ci
-
-      #Build frontend
-      - working-directory: client
-        run: npm run build
 
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
