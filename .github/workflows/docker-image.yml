@@ -29,6 +29,5 @@ jobs:
         working-directory: client
         run: npm run build
 
-      # --- Docker build voor backend ---
-      - name: Build Docker image van de backend
-        run: docker build -t my-backend:latest backend
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
