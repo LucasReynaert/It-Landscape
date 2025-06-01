@@ -37,7 +37,7 @@ jobs:
       # --- Backend acties ---
       - name: Installeer backend dependencies
         working-directory: backend
-        run: npm ci
+        run: npm install
 
       - name: Lint backend code
         working-directory: backend
