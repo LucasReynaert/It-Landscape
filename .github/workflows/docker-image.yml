@@ -24,7 +24,7 @@ jobs:
 
       - name: Installeer frontend dependencies
         working-directory: client
-        run: npm ci
+        run: npm install
 
       - name: Lint frontend code
         working-directory: client
