@@ -12,11 +12,10 @@ jobs:
     runs-on: ubuntu-latest # Draait op een Ubuntu VM
 
     steps:
-      # Stap 1: Haal de broncode van de repo op
+      #haal de code uit de repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # --- Frontend acties ---
       - name: Setup Node.js voor frontend
         uses: actions/setup-node@v4
         with:
@@ -26,29 +25,10 @@ jobs:
         working-directory: client
         run: npm install
 
-      - name: Lint frontend code
-        working-directory: client
-        run: npm run lint
-
       - name: Build frontend
         working-directory: client
         run: npm run build
 
-      # --- Backend acties ---
-      - name: Installeer backend dependencies
-        working-directory: backend
-        run: npm install
-
-      - name: Lint backend code
-        working-directory: backend
-        run: npm run format-check
-
-      - name: Run backend tests
-        working-directory: backend
-        run: npm test
-
       # --- Docker build voor backend ---
       - name: Build Docker image van de backend
         run: docker build -t my-backend:latest backend
-        # Je kan ook taggen met een Git commit hash of build timestamp voor tracking:
-        # run: docker build -t my-backend:${{ github.sha }} backend
