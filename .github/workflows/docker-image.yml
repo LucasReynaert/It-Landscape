@@ -1,5 +1,6 @@
-name: Docker Image CI
-#Deze workflow wordt uigevoerd bij elke push of pull naar de main branch
+name: CI Pipeline
+
+# Deze workflow draait bij elke push of pull request naar de main branch
 on:
   push:
     branches: ["main"]
@@ -8,17 +9,46 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest #draait op de nieuwste ubuntu in github actions
+    runs-on: ubuntu-latest # Draait op een Ubuntu VM
 
     steps:
-      #haalt de code uit de repository
-      - uses: actions/checkout@v4
-      #setup node voor frontend
-      - uses: actions/setup-node@v4
+      # Stap 1: Haal de broncode van de repo op
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # --- Frontend acties ---
+      - name: Setup Node.js voor frontend
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
       - name: Installeer frontend dependencies
         working-directory: client
         run: npm ci
 
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Lint frontend code
+        working-directory: client
+        run: npm run lint
+
+      - name: Build frontend
+        working-directory: client
+        run: npm run build
+
+      # --- Backend acties ---
+      - name: Installeer backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Lint backend code
+        working-directory: backend
+        run: npm run format-check
+
+      - name: Run backend tests
+        working-directory: backend
+        run: npm test
+
+      # --- Docker build voor backend ---
+      - name: Build Docker image van de backend
+        run: docker build -t my-backend:latest backend
+        # Je kan ook taggen met een Git commit hash of build timestamp voor tracking:
+        # run: docker build -t my-backend:${{ github.sha }} backend
